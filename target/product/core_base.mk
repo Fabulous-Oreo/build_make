@@ -20,6 +20,9 @@ PRODUCT_PROPERTY_OVERRIDES := \
     ro.config.notification_sound=Chime.ogg \
     ro.config.alarm_alert=Flow.ogg
 
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.build.selinux=1
+
 PRODUCT_PACKAGES += \
     ContactsProvider \
     DefaultContainerService \
