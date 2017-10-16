@@ -59,6 +59,11 @@ PRODUCT_PACKAGES += \
     vr \
     MmsService
 
+# Init.d support
+PRODUCT_PACKAGES += init.d.rc
+PRODUCT_COPY_FILES += \
+    system/core/rootdir/sysinit:system/bin/sysinit
+
 # The set of packages whose code can be loaded by the system server.
 PRODUCT_SYSTEM_SERVER_APPS += \
     FusedLocation \
