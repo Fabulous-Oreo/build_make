@@ -52,6 +52,7 @@ PRODUCT_PACKAGES += \
     ProxyHandler \
     Settings \
     SharedStorageBackup \
+    Stk \
     StorageManager \
     Telecom \
     TeleService \
