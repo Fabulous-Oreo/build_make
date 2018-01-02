@@ -583,7 +583,7 @@ function lunch()
     then
         if [ $answer -le ${#LUNCH_MENU_CHOICES[@]} ]
         then
-            if [ "$(__detect_shell)" == "zsh" ]; then
+            if [[ "$(__detect_shell)" == "zsh" ]]; then
                 selection=${LUNCH_MENU_CHOICES[$(($answer))]}
             else
                 selection=${LUNCH_MENU_CHOICES[$(($answer-1))]}
@@ -842,7 +842,7 @@ function mmm()
         local GET_INSTALL_PATH=
         local GET_INSTALL_PATHS=
 
-        if [ "$(__detect_shell)" == "zsh" ]; then
+        if [[ "$(__detect_shell)" == "zsh" ]]; then
             set -lA DASH_ARGS $(echo "$@" | awk -v RS=" " -v ORS=" " '/^-.*$/')
             set -lA DIRS $(echo "$@" | awk -v RS=" " -v ORS=" " '/^[^-].*$/')
         else
@@ -931,7 +931,7 @@ function mmma()
   local T=$(gettop)
   local DRV=$(getdriver $T)
   if [ "$T" ]; then
-    if [ "$(__detect_shell)" == "zsh" ]; then
+    if [[ "$(__detect_shell)" == "zsh" ]]; then
         set -lA DASH_ARGS $(echo "$@" | awk -v RS=" " -v ORS=" " '/^-.*$/')
         set -lA DIRS $(echo "$@" | awk -v RS=" " -v ORS=" " '/^[^-].*$/')
     else
