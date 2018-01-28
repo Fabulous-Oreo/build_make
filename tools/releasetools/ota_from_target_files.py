@@ -476,7 +476,32 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.Comment("Stage 3/3")
 
   # Dump fingerprints
-  script.Print("Target: %s" % target_fp)
+  #script.Print("Target: %s" % target_fp)
+
+  script.Print(" ")
+  script.Print("==================================================");
+  script.Print("      ______      __          __                  ");
+  script.Print("     / ____/___ _/ /_  __  __/ /___  __  _______  ");
+  script.Print("    / /_  / __ `/ __ \/ / / / / __ \/ / / / ___/  ");
+  script.Print("   / __/ / /_/ / /_/ / /_/ / / /_/ / /_/ (__  )   ");
+  script.Print("  /_/    \__,_/_.___/\__,_/_/\____/\__,_/____/    ");
+  script.Print("               / __ \________  ____               ");
+  script.Print("              / / / / ___/ _ \/ __ \              ");
+  script.Print("             / /_/ / /  /  __/ /_/ /              ");
+  script.Print("             \____/_/   \___/\____/               ");
+  script.Print(" ")
+
+  if GetBuildProp("ro.build.id", OPTIONS.info_dict) is not None:
+    androidver = GetBuildProp("ro.build.version.release", OPTIONS.info_dict)
+    securep = GetBuildProp("ro.build.version.security_patch", OPTIONS.info_dict)
+    buildid = GetBuildProp("ro.build.id", OPTIONS.info_dict)
+    buildday = GetBuildProp("ro.build.date", OPTIONS.info_dict)
+    script.Print("==================================================");
+    script.Print("Android Version : %s"%(androidver));
+    script.Print("Security Patch  : %s"%(securep));
+    script.Print("Build Number    : %s"%(buildid));
+    script.Print("Build Date      : %s"%(buildday));
+    script.Print("==================================================");
 
   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
