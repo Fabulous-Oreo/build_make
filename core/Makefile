@@ -2242,6 +2242,8 @@ name := $(name)-target_files-$(FILE_NAME_TAG)
 
 intermediates := $(call intermediates-dir-for,PACKAGING,target_files)
 BUILT_TARGET_FILES_PACKAGE := $(intermediates)/$(name).zip
+INCREMENTAL_TARGET_FILES_PACKAGE := $(PRODUCT_OUT)/$(name).incremental.zip
+
 $(BUILT_TARGET_FILES_PACKAGE): intermediates := $(intermediates)
 $(BUILT_TARGET_FILES_PACKAGE): \
 		zip_root := $(intermediates)/$(name)
@@ -2640,6 +2642,11 @@ endif
 	$(hide) find $(zip_root) -path $(zip_root)/META -prune -o -print | sort >>$@.list
 	$(hide) $(SOONG_ZIP) -d -o $@ -C $(zip_root) -l $@.list
 
+$(INCREMENTAL_TARGET_FILES_PACKAGE): $(BUILT_TARGET_FILES_PACKAGE)
+	$(hide) if [ ! -f $(INCREMENTAL_TARGET_FILES_PACKAGE) ]; \
+	    then cp $(BUILT_TARGET_FILES_PACKAGE) $(INCREMENTAL_TARGET_FILES_PACKAGE); \
+	    fi;
+
 .PHONY: target-files-package
 target-files-package: $(BUILT_TARGET_FILES_PACKAGE)
 
@@ -2713,8 +2720,23 @@ else
     AOSP_TARGET_PACKAGE := $(PRODUCT_OUT)/aosp_$(TARGET_DEVICE)-$(PLATFORM_VERSION)-$(shell date +%Y%m%d_%H%M).$(USER).zip
 endif
 
+AOSP_INCREMENTAL_PACKAGE := $(PRODUCT_OUT)/aosp_$(TARGET_DEVICE)-$(PLATFORM_VERSION)-$(shell date +%Y%m%d).$(USER).incremental.zip
+$(AOSP_INCREMENTAL_PACKAGE): \
+		build/tools/releasetools/ota_from_target_files
+	@echo "Package Incremental OTA: $(AOSP_INCREMENTAL_PACKAGE)"
+	   ./build/tools/releasetools/ota_from_target_files -i \
+           $(INCREMENTAL_TARGET_FILES_PACKAGE) \
+           $(BUILT_TARGET_FILES_PACKAGE) \
+	   $(AOSP_INCREMENTAL_PACKAGE)
+	$(hide) mv "$(INCREMENTAL_TARGET_FILES_PACKAGE)" "$(INCREMENTAL_TARGET_FILES_PACKAGE).old"
+	$(hide) cp $(BUILT_TARGET_FILES_PACKAGE) $(INCREMENTAL_TARGET_FILES_PACKAGE)
+
+.PHONY: incremental
+incremental: $(AOSP_INCREMENTAL_PACKAGE)
+
 .PHONY: otapackage
-otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
+otapackage: $(INTERNAL_OTA_PACKAGE_TARGET) \
+		$(AOSP_INCREMENTAL_PACKAGE)
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(AOSP_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(AOSP_TARGET_PACKAGE) > $(AOSP_TARGET_PACKAGE).md5sum
 	@echo -e "Package complete: $(AOSP_TARGET_PACKAGE)"
