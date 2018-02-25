@@ -2722,7 +2722,7 @@ else
 endif
 
 AOSP_INCREMENTAL_PACKAGE := $(PRODUCT_OUT)/aosp_$(TARGET_DEVICE)-$(PLATFORM_VERSION)-$(shell date +%Y%m%d).$(USER).incremental.zip
-$(AOSP_INCREMENTAL_PACKAGE): \
+$(AOSP_INCREMENTAL_PACKAGE): $(INCREMENTAL_TARGET_FILES_PACKAGE) \
 		build/tools/releasetools/ota_from_target_files
 	@echo "Package Incremental OTA: $(AOSP_INCREMENTAL_PACKAGE)"
 	   ./build/tools/releasetools/ota_from_target_files -i \
