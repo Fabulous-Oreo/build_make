@@ -754,10 +754,10 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     buildid = GetBuildProp("ro.build.id", OPTIONS.info_dict)
     buildday = GetBuildProp("ro.build.date", OPTIONS.info_dict)
     script.Print("==================================================");
-    script.Print("Android Version : %s"%(androidver));
-    script.Print("Security Patch  : %s"%(securep));
-    script.Print("Build Number    : %s"%(buildid));
-    script.Print("Build Date      : %s"%(buildday));
+    script.Print("  Android Version : %s"%(androidver));
+    script.Print("  Security Patch  : %s"%(securep));
+    script.Print("  Build Number    : %s"%(buildid));
+    script.Print("  Build Date      : %s"%(buildday));
     script.Print("==================================================");
 
   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
