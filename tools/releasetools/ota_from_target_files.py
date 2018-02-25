@@ -1137,33 +1137,6 @@ else if get_stage("%(bcb_dev)s") != "3/3" then
 
   device_specific.IncrementalOTA_VerifyBegin()
 
-  # When blockimgdiff version is less than 3 (non-resumable block-based OTA),
-  # patching on a device that's already on the target build will damage the
-  # system. Because operations like move don't check the block state, they
-  # always apply the changes unconditionally.
-  if blockimgdiff_version <= 2:
-    if source_oem_props is None:
-      script.AssertSomeFingerprint(source_fp)
-    else:
-      script.AssertSomeThumbprint(
-          GetBuildProp("ro.build.thumbprint", OPTIONS.source_info_dict))
-
-  else: # blockimgdiff_version > 2
-    if source_oem_props is None and target_oem_props is None:
-      script.AssertSomeFingerprint(source_fp, target_fp)
-    elif source_oem_props is not None and target_oem_props is not None:
-      script.AssertSomeThumbprint(
-          GetBuildProp("ro.build.thumbprint", OPTIONS.target_info_dict),
-          GetBuildProp("ro.build.thumbprint", OPTIONS.source_info_dict))
-    elif source_oem_props is None and target_oem_props is not None:
-      script.AssertFingerprintOrThumbprint(
-          source_fp,
-          GetBuildProp("ro.build.thumbprint", OPTIONS.target_info_dict))
-    else:
-      script.AssertFingerprintOrThumbprint(
-          target_fp,
-          GetBuildProp("ro.build.thumbprint", OPTIONS.source_info_dict))
-
   # Check the required cache size (i.e. stashed blocks).
   size = []
   if system_diff:
@@ -1838,21 +1811,6 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
                                    OPTIONS.target_info_dict)
   source_fp = CalculateFingerprint(source_oem_props, oem_dicts and oem_dicts[0],
                                    OPTIONS.source_info_dict)
-
-  if source_oem_props is None and target_oem_props is None:
-    script.AssertSomeFingerprint(source_fp, target_fp)
-  elif source_oem_props is not None and target_oem_props is not None:
-    script.AssertSomeThumbprint(
-        GetBuildProp("ro.build.thumbprint", OPTIONS.target_info_dict),
-        GetBuildProp("ro.build.thumbprint", OPTIONS.source_info_dict))
-  elif source_oem_props is None and target_oem_props is not None:
-    script.AssertFingerprintOrThumbprint(
-        source_fp,
-        GetBuildProp("ro.build.thumbprint", OPTIONS.target_info_dict))
-  else:
-    script.AssertFingerprintOrThumbprint(
-        target_fp,
-        GetBuildProp("ro.build.thumbprint", OPTIONS.source_info_dict))
 
   metadata["pre-build"] = source_fp
   metadata["post-build"] = target_fp
